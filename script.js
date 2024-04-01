@@ -3,7 +3,6 @@
 // Variables
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-ctx.willReadFrequently = true;
 const colorInput = document.getElementById("color-input");
 const sizeInput = document.getElementById("size-input");
 let color = "black";
