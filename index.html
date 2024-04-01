@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Paint</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="screen">
+    <div class="workspace">
+      <div class="tool-bar">
+        <div class="options-bar">
+          <div class="option"></div>
+          <div class="option"></div>
+          <div class="option"></div>
+          <div class="option option-undo" onclick="undo();">
+            <img src="icons/undo.svg" />
+          </div>
+          <div class="option option-redo" onclick="redo();">
+            <img src="icons/redo.svg" />
+          </div>
+        </div>
+        <div class="settings-bar">
+          <div class="setting setting-color">
+            <span>Color</span>
+            <input id="color-input" type="color" />
+          </div>
+          <div class="setting setting-size">
+            <span>Brush size</span>
+            <input id="size-input" type="range" value="20" min="1" max="80" />
+          </div>
+        </div>
+      </div>
+      <div class="canvas">
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
