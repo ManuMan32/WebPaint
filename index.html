@@ -11,7 +11,7 @@
     <div class="workspace">
       <div class="tool-bar">
         <div class="options-bar">
-          <div class="option option-brush" onclick=";">
+          <div class="option option-brush" onclick="changeTool(TOOLS.BRUSH);">
             <img src="icons/brush.svg" alt="brush" />
           </div>
           <div class="option option-highlighter" onclick=";">
@@ -20,7 +20,7 @@
           <div class="option option-eraser" onclick=";">
             <img src="icons/eraser.svg" alt="eraser" />
           </div>
-          <div class="option option-square" onclick=";">
+          <div class="option option-square" onclick="changeTool(TOOLS.SQUARE);">
             <img src="icons/square.svg" alt="square" />
           </div>
           <div class="option option-circle" onclick=";">
@@ -60,6 +60,7 @@
       </div>
       <div class="canvas">
         <canvas id="canvas"></canvas>
+        <canvas id="canvas-mask"></canvas>
       </div>
     </div>
   </div>
