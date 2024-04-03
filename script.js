@@ -79,6 +79,8 @@ function draw(e) {
   mousePos.x = e.x - canvas.offsetLeft;
   mousePos.y = e.y - canvas.offsetTop;
   if (drawing) {
+    const w = mousePos.x - mousePos.xDown;
+    const h = mousePos.y - mousePos.yDown;
     switch (tool) {
       case TOOLS.BRUSH:
         ctx.lineTo(mousePos.x, mousePos.y);
@@ -87,9 +89,20 @@ function draw(e) {
         ctx.stroke();
         break;
       case TOOLS.SQUARE:
-        const w = mousePos.x - mousePos.xDown;
-        const h = mousePos.y - mousePos.yDown;
         ctxMask.strokeRect(mousePos.xDown, mousePos.yDown, w, h);
+        break;
+      case TOOLS.CIRCLE:
+        ctxMask.beginPath();
+        ctxMask.ellipse(
+          mousePos.xDown + w / 2,
+          mousePos.yDown + h / 2,
+          Math.abs(w / 2),
+          Math.abs(h / 2),
+          0,
+          0,
+          Math.PI * 2);
+        ctxMask.stroke();
+        ctxMask.closePath();
         break;
     }
   }
@@ -103,6 +116,18 @@ function drawEnd(e) {
       case TOOLS.BRUSH: ctx.closePath();
         break;
       case TOOLS.SQUARE: ctx.fillRect(mousePos.xDown, mousePos.yDown, mousePos.x - mousePos.xDown, mousePos.y - mousePos.yDown);
+        break;
+      case TOOLS.CIRCLE: ctx.beginPath();
+        ctx.ellipse(
+        mousePos.xDown + (mousePos.x - mousePos.xDown) / 2,
+        mousePos.yDown + (mousePos.y - mousePos.yDown) / 2,
+        Math.abs((mousePos.x - mousePos.xDown) / 2),
+        Math.abs((mousePos.y - mousePos.yDown) / 2),
+        0,
+        0,
+        Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
         break;
     }
     mousePos.xUp = e.x - canvas.offsetLeft;
