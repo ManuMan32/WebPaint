@@ -59,6 +59,8 @@ function drawStart(e) {
   drawing = true;
   color = colorInput.value;
   ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctxMask.strokeStyle = color;
   size = sizeInput.value;
   switch (tool) {
     case TOOLS.BRUSH:
@@ -142,15 +144,14 @@ function changeTool(newTool) {
     canvasMask.style.display = "block";
   } else canvasMask.style.display = "none";
 }
-function brush() {
-
-}
 
 // Resize Fix
 function resizeFix() {
   const canvasRect = canvas.getBoundingClientRect();
   canvas.width = canvasRect.width;
   canvas.height = canvasRect.height;
+  canvasMask.width = canvasRect.width;
+  canvasMask.height = canvasRect.height;
   canvasMask.style.width = canvasRect.width + "px";
   canvasMask.style.height = canvasRect.height + "px";
 }
