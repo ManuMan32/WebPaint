@@ -24,6 +24,7 @@ const mousePos = {
 const TOOLS = {
   BRUSH: "brush",
   HIGHLIGHTER: "highlighter",
+  LINE: "line",
   ERASER: "eraser",
   SQUARE: "square",
   CIRCLE: "circle",
@@ -88,6 +89,13 @@ function draw(e) {
         ctx.lineJoin = "round";
         ctx.stroke();
         break;
+      case TOOLS.LINE:
+        ctxMask.beginPath();
+        ctxMask.moveTo(mousePos.xDown, mousePos.yDown);
+        ctxMask.lineTo(mousePos.x, mousePos.y);
+        ctxMask.stroke();
+        ctxMask.closePath();
+        break;
       case TOOLS.SQUARE:
         ctxMask.strokeRect(mousePos.xDown, mousePos.yDown, w, h);
         break;
@@ -114,6 +122,12 @@ function drawEnd(e) {
   if (e.type != "mouseout") {
     switch (tool) {
       case TOOLS.BRUSH: ctx.closePath();
+        break;
+      case TOOLS.LINE: ctx.beginPath();
+        ctx.moveTo(mousePos.xDown, mousePos.yDown);
+        ctx.lineTo(mousePos.x, mousePos.y);
+        ctx.stroke();
+        ctx.closePath();
         break;
       case TOOLS.SQUARE: ctx.fillRect(mousePos.xDown, mousePos.yDown, mousePos.x - mousePos.xDown, mousePos.y - mousePos.yDown);
         break;
@@ -165,7 +179,7 @@ function clearCanvas() {
 
 function changeTool(newTool) {
   tool = newTool;
-  if (newTool == TOOLS.SQUARE || newTool == TOOLS.CIRCLE) {
+  if (newTool == TOOLS.LINE || newTool == TOOLS.SQUARE || newTool == TOOLS.CIRCLE) {
     canvasMask.style.display = "block";
   } else canvasMask.style.display = "none";
 }
