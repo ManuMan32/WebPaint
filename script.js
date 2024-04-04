@@ -9,6 +9,7 @@ const ctxMask = canvasMask.getContext("2d");
 const colorInput = document.getElementById("color-input");
 const sizeInput = document.getElementById("size-input");
 const strokeInput = document.getElementById("stroke-input");
+console.log(ctx);
 // Settings
 let color = "black";
 let size = 20;
@@ -29,8 +30,8 @@ const mousePos = {
 const TOOLS = {
   BRUSH: "brush",
   HIGHLIGHTER: "highlighter",
-  LINE: "line",
   ERASER: "eraser",
+  LINE: "line",
   SQUARE: "square",
   CIRCLE: "circle",
   MAGIC: "magic"
@@ -71,6 +72,8 @@ function drawStart(e) {
   stroke = strokeInput.checked;
   switch (tool) {
     case TOOLS.BRUSH:
+    case TOOLS.HIGHLIGHTER:
+    case TOOLS.ERASER:
       ctx.lineWidth = size;
       ctx.beginPath();
       ctx.moveTo(e.x - canvas.offsetLeft, e.y - canvas.offsetTop);
@@ -89,11 +92,22 @@ function draw(e) {
     const w = mousePos.x - mousePos.xDown;
     const h = mousePos.y - mousePos.yDown;
     switch (tool) {
+      case TOOLS.ERASER:
+        ctx.strokeStyle = "white";
       case TOOLS.BRUSH:
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.stroke();
+        ctx.strokeStyle = color;
+        break;
+      case TOOLS.HIGHLIGHTER:
+        ctx.strokeStyle = color + "01";
+        ctx.lineTo(mousePos.x, mousePos.y);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+        ctx.strokeStyle = color;
         break;
       case TOOLS.LINE:
         ctxMask.beginPath();
