@@ -203,3 +203,13 @@ function resizeFix() {
 }
 window.addEventListener("resize", resizeFix);
 resizeFix();
+
+// Other functionalities
+// Options bar highlight
+const options = document.querySelectorAll(".option");
+options.forEach(op => {
+  op.addEventListener("click", function() {
+    options.forEach(option => option.classList.toggle("selected", false));
+    this.classList.add("selected");
+  })
+})
