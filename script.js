@@ -1,14 +1,19 @@
 "use strict";
 
 // Variables
+// References
 const canvas = document.getElementById("canvas");
 const canvasMask = document.getElementById("canvas-mask");
 const ctx = canvas.getContext("2d");
 const ctxMask = canvasMask.getContext("2d");
 const colorInput = document.getElementById("color-input");
 const sizeInput = document.getElementById("size-input");
+const strokeInput = document.getElementById("stroke-input");
+// Settings
 let color = "black";
 let size = 20;
+let stroke = false;
+// Other
 let drawing = false;
 const changesArray = [];
 let changesPosition = -1;
@@ -63,6 +68,7 @@ function drawStart(e) {
   ctx.fillStyle = color;
   ctxMask.strokeStyle = color;
   size = sizeInput.value;
+  stroke = strokeInput.checked;
   switch (tool) {
     case TOOLS.BRUSH:
       ctx.lineWidth = size;
@@ -129,7 +135,8 @@ function drawEnd(e) {
         ctx.stroke();
         ctx.closePath();
         break;
-      case TOOLS.SQUARE: ctx.fillRect(mousePos.xDown, mousePos.yDown, mousePos.x - mousePos.xDown, mousePos.y - mousePos.yDown);
+      case TOOLS.SQUARE:
+        (stroke) ? ctx.strokeRect(mousePos.xDown, mousePos.yDown, mousePos.x - mousePos.xDown, mousePos.y - mousePos.yDown) : ctx.fillRect(mousePos.xDown, mousePos.yDown, mousePos.x - mousePos.xDown, mousePos.y - mousePos.yDown);
         break;
       case TOOLS.CIRCLE: ctx.beginPath();
         ctx.ellipse(
@@ -140,7 +147,7 @@ function drawEnd(e) {
         0,
         0,
         Math.PI * 2);
-        ctx.fill();
+        (stroke) ? ctx.stroke() : ctx.fill();
         ctx.closePath();
         break;
     }
