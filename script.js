@@ -222,6 +222,7 @@ resizeFix();
 // Options bar highlight
 const options = document.querySelectorAll(".option");
 options.forEach(op => {
+  if (op.classList.contains("option-nohighlight")) return;
   op.addEventListener("click", function() {
     options.forEach(option => option.classList.toggle("selected", false));
     this.classList.add("selected");
