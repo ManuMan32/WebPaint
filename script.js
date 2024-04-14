@@ -9,7 +9,6 @@ const ctxMask = canvasMask.getContext("2d");
 const colorInput = document.getElementById("color-input");
 const sizeInput = document.getElementById("size-input");
 const strokeInput = document.getElementById("stroke-input");
-console.log(ctx);
 // Settings
 let color = "black";
 let size = 20;
@@ -189,6 +188,37 @@ function redo() {
   changesPosition++;
   if (changesPosition < changesArray.length) ctx.putImageData(changesArray[changesPosition], 0, 0);
   else changesPosition = changesArray.length - 1;
+}
+
+function saveImage() {
+  const url = canvas.toDataURL("image/png");
+  const reference = document.createElement("a");
+  reference.href = url;
+  reference.download = "imageWebPaint.png";
+  document.body.appendChild(reference);
+  reference.click();
+  document.body.removeChild(reference);
+}
+
+function loadImage() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (ev) => {
+      const image = new Image();
+      image.src = ev.target.result;
+      image.onload = () => {
+        clearCanvas();
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      }
+    }
+  }
+  input.click();
 }
 
 function clearCanvas() {
