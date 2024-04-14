@@ -33,7 +33,7 @@ const TOOLS = {
   LINE: "line",
   SQUARE: "square",
   CIRCLE: "circle",
-  MAGIC: "magic"
+  FILL: "fill"
 }
 let tool = TOOLS.BRUSH;
 
@@ -76,6 +76,9 @@ function drawStart(e) {
       ctx.lineWidth = size;
       ctx.beginPath();
       ctx.moveTo(e.x - canvas.offsetLeft, e.y - canvas.offsetTop);
+      break;
+    case TOOLS.FILL:
+      fillArea(e.x, e.y, hexToRgba(color));
       break;
   }
   mousePos.xDown = e.x - canvas.offsetLeft;
@@ -153,13 +156,13 @@ function drawEnd(e) {
         break;
       case TOOLS.CIRCLE: ctx.beginPath();
         ctx.ellipse(
-        mousePos.xDown + (mousePos.x - mousePos.xDown) / 2,
-        mousePos.yDown + (mousePos.y - mousePos.yDown) / 2,
-        Math.abs((mousePos.x - mousePos.xDown) / 2),
-        Math.abs((mousePos.y - mousePos.yDown) / 2),
-        0,
-        0,
-        Math.PI * 2);
+          mousePos.xDown + (mousePos.x - mousePos.xDown) / 2,
+          mousePos.yDown + (mousePos.y - mousePos.yDown) / 2,
+          Math.abs((mousePos.x - mousePos.xDown) / 2),
+          Math.abs((mousePos.y - mousePos.yDown) / 2),
+          0,
+          0,
+          Math.PI * 2);
         (stroke) ? ctx.stroke() : ctx.fill();
         ctx.closePath();
         break;
@@ -173,6 +176,52 @@ function drawEnd(e) {
     if (changesArray.length >= changesArrayLimit) {
       changesArray.splice(0, 1);
     } else changesPosition++;
+  }
+}
+
+function getColor(x, y) {
+  const pixel = ctx.getImageData(x, y, 1, 1);
+  const data = pixel.data;
+  return [data[0], data[1], data[2]];
+}
+
+function hexToRgba(hex) {
+  let c;
+  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+    c = hex.substring(1).split('');
+    if (c.length == 3) {
+      c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c = '0x' + c.join('');
+    return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+  }
+}
+
+function fillArea(x, y, fillColor) {
+  const currentColor = getColor(x - canvas.offsetLeft, y - canvas.offsetTop);
+  if (currentColor[0] === fillColor[0] &&
+    currentColor[1] === fillColor[1] &&
+    currentColor[2] === fillColor[2] &&
+    currentColor[3] === fillColor[3]
+  ) return;
+  let stack = [[x, y]];
+  while (stack.length) {
+    const position = stack.pop();
+    const px = position[0];
+    const py = position[1];
+    const pixelColor = getColor(px - canvas.offsetLeft, py - canvas.offsetTop);
+    if (currentColor[0] === pixelColor[0] &&
+      currentColor[1] === pixelColor[1] &&
+      currentColor[2] === pixelColor[2] &&
+      currentColor[3] === pixelColor[3]
+    ) {
+      ctx.fillStyle = 'rgb(' + fillColor.join(',') + ')';
+      ctx.fillRect(px - canvas.offsetLeft, py - canvas.offsetTop, 4, 4);
+      if (px - canvas.offsetLeft > 0) stack.push([px - 4, py]);
+      if (px - canvas.offsetLeft < canvas.width - 5) stack.push([px + 4, py]);
+      if (py - canvas.offsetTop > 0) stack.push([px, py - 4]);
+      if (py - canvas.offsetTop < canvas.height - 5) stack.push([px, py + 4]);
+    }
   }
 }
 
@@ -223,7 +272,7 @@ function loadImage() {
 
 function clearCanvas() {
   ctx.fillStyle = "white";
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 // Tools
@@ -244,6 +293,7 @@ function resizeFix() {
   canvasMask.height = canvasRect.height;
   canvasMask.style.width = canvasRect.width + "px";
   canvasMask.style.height = canvasRect.height + "px";
+  clearCanvas();
 }
 window.addEventListener("resize", resizeFix);
 resizeFix();
@@ -253,7 +303,7 @@ resizeFix();
 const options = document.querySelectorAll(".option");
 options.forEach(op => {
   if (op.classList.contains("option-nohighlight")) return;
-  op.addEventListener("click", function() {
+  op.addEventListener("click", function () {
     options.forEach(option => option.classList.toggle("selected", false));
     this.classList.add("selected");
   })
