@@ -73,9 +73,12 @@ function drawStart(e) {
     case TOOLS.BRUSH:
     case TOOLS.HIGHLIGHTER:
     case TOOLS.ERASER:
-      ctx.lineWidth = size;
       ctx.beginPath();
       ctx.moveTo(e.x - canvas.offsetLeft, e.y - canvas.offsetTop);
+    case TOOLS.CIRCLE:
+    case TOOLS.SQUARE:
+    case TOOLS.LINE:
+      ctx.lineWidth = size;
       break;
     case TOOLS.FILL:
       fillArea(e.x, e.y, hexToRgba(color));
