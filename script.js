@@ -15,7 +15,7 @@ let size = 20;
 let stroke = false;
 // Other
 let drawing = false;
-const changesArray = [];
+let changesArray = [];
 let changesPosition = -1;
 const changesArrayLimit = 15;
 const mousePos = {
@@ -230,14 +230,17 @@ function fillArea(x, y, fillColor) {
 
 function undo() {
   changesPosition--;
+  console.log(changesPosition);
   if (changesPosition < 0) {
-    clearCanvas();
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     changesPosition = -1;
   } else ctx.putImageData(changesArray[changesPosition], 0, 0);
 }
 
 function redo() {
   changesPosition++;
+  console.log(changesPosition);
   if (changesPosition < changesArray.length) ctx.putImageData(changesArray[changesPosition], 0, 0);
   else changesPosition = changesArray.length - 1;
 }
@@ -276,6 +279,8 @@ function loadImage() {
 function clearCanvas() {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  changesArray = [];
+  changesPosition = -1;
 }
 
 // Tools
