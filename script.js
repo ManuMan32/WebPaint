@@ -230,7 +230,6 @@ function fillArea(x, y, fillColor) {
 
 function undo() {
   changesPosition--;
-  console.log(changesPosition);
   if (changesPosition < 0) {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -240,7 +239,6 @@ function undo() {
 
 function redo() {
   changesPosition++;
-  console.log(changesPosition);
   if (changesPosition < changesArray.length) ctx.putImageData(changesArray[changesPosition], 0, 0);
   else changesPosition = changesArray.length - 1;
 }
@@ -284,7 +282,6 @@ function clearCanvas() {
 }
 
 // Tools
-
 function changeTool(newTool) {
   tool = newTool;
   if (newTool == TOOLS.LINE || newTool == TOOLS.SQUARE || newTool == TOOLS.CIRCLE) {
@@ -294,6 +291,7 @@ function changeTool(newTool) {
 
 // Resize Fix
 function resizeFix() {
+  const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const canvasRect = canvas.getBoundingClientRect();
   canvas.width = canvasRect.width;
   canvas.height = canvasRect.height;
@@ -301,10 +299,13 @@ function resizeFix() {
   canvasMask.height = canvasRect.height;
   canvasMask.style.width = canvasRect.width + "px";
   canvasMask.style.height = canvasRect.height + "px";
+  // Resize image
   clearCanvas();
+  ctx.putImageData(image, 0, 0);
 }
 window.addEventListener("resize", resizeFix);
 resizeFix();
+clearCanvas();
 
 // Other functionalities
 // Options bar highlight
