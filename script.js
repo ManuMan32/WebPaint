@@ -23,8 +23,6 @@ const mousePos = {
   y: null,
   xDown: null,
   yDown: null,
-  xUp: null,
-  yUp: null
 }
 const TOOLS = {
   BRUSH: "brush",
@@ -63,6 +61,8 @@ canvasMask.addEventListener("mouseout", drawEnd);
 // Functions
 function drawStart(e) {
   drawing = true;
+  mousePos.xDown = e.x - canvas.offsetLeft;
+  mousePos.yDown = e.y - canvas.offsetTop;
   color = colorInput.value;
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
@@ -74,7 +74,7 @@ function drawStart(e) {
     case TOOLS.HIGHLIGHTER:
     case TOOLS.ERASER:
       ctx.beginPath();
-      ctx.moveTo(e.x - canvas.offsetLeft, e.y - canvas.offsetTop);
+      ctx.moveTo(mousePos.xDown, mousePos.yDown);
     case TOOLS.CIRCLE:
     case TOOLS.SQUARE:
     case TOOLS.LINE:
@@ -84,8 +84,6 @@ function drawStart(e) {
       fillArea(e.x, e.y, hexToRgba(color));
       break;
   }
-  mousePos.xDown = e.x - canvas.offsetLeft;
-  mousePos.yDown = e.y - canvas.offsetTop;
   draw(e);
 }
 
@@ -146,8 +144,6 @@ function drawEnd(e) {
   ctx.closePath();
   if (e.type != "mouseout") {
     switch (tool) {
-      case TOOLS.BRUSH: ctx.closePath();
-        break;
       case TOOLS.LINE: ctx.beginPath();
         ctx.moveTo(mousePos.xDown, mousePos.yDown);
         ctx.lineTo(mousePos.x, mousePos.y);
@@ -170,8 +166,6 @@ function drawEnd(e) {
         ctx.closePath();
         break;
     }
-    mousePos.xUp = e.x - canvas.offsetLeft;
-    mousePos.yUp = e.y - canvas.offsetTop;
     if (changesPosition != changesArray.length - 1) {
       changesArray.splice(changesPosition + 1);
     }
